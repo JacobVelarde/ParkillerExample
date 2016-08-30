@@ -116,9 +116,10 @@ class ParkillerDelegate {
     
     func searchPlaces(place: String, client: SearchResultsController){
         
-        _ = place.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.symbolCharacterSet())
-
-        let url = NSURL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(place)&types=geocode&key=AIzaSyBTDbGRHRETcDkyXCD2-kA86xIvONdrles")
+//        _ = place.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.symbolCharacterSet())
+        let cad = place.stringByReplacingOccurrencesOfString(" ", withString: "+", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+        let url = NSURL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(cad)&types=geocode&key=AIzaSyBTDbGRHRETcDkyXCD2-kA86xIvONdrles")
         
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!) { (data, response, error) -> Void in
             do {

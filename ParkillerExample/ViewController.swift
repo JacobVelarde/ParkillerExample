@@ -97,6 +97,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
         latitudeDestination = coordinate.latitude
         longitudeDestination = coordinate.longitude
         marker.title = parKillerDelegate.getAddressForLatLng(String(format:"%f", latitudeDestination), longitude: String(format:"%f",longitudeDestination))
+        addCirlce(coordinate, r: 200, color: UIColor.redColor())
+        addCirlce(coordinate, r: 100, color: UIColor.yellowColor())
+        addCirlce(coordinate, r: 50, color: UIColor.blueColor())
+        addCirlce(coordinate, r: 10, color: UIColor.greenColor())
     }
     
     func addMarkWithLatLong(coordinate: CLLocationCoordinate2D){
@@ -108,6 +112,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
         latitudeDestination = coordinate.latitude
         longitudeDestination = coordinate.longitude
         marker.title = parKillerDelegate.getAddressForLatLng(String(format:"%f", latitudeDestination), longitude: String(format:"%f",longitudeDestination))
+        addCirlce(coordinate, r: 200, color: UIColor.redColor())
+        addCirlce(coordinate, r: 100, color: UIColor.yellowColor())
+        addCirlce(coordinate, r: 50, color: UIColor.blueColor())
+        addCirlce(coordinate, r: 10, color: UIColor.greenColor())
     }
     
     func addMark(gestureReconizer: UITapGestureRecognizer){
@@ -185,6 +193,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
         lblMessage.text = ""
     }
     
+    func addCirlce(position: CLLocationCoordinate2D, r: Double, color : UIColor){
+        let circ = GMSCircle(position: position, radius: r)
+        circ.strokeColor = color
+        circ.strokeWidth = 5
+        circ.map = googleMaps;
+    }
+    
 
     //Protocols Location
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
@@ -235,6 +250,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
             if response == "OK" {
                 
                 marker.map = nil
+                googleMaps.clear()
                 isMarker = false
             }else if response == "CANCEL"{
                 
