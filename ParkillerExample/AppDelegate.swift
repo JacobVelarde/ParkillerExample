@@ -20,6 +20,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
         GMSServices.provideAPIKey(googleMapsApiKey);
+
+        let notification:UIUserNotificationType = UIUserNotificationType.Alert.union(UIUserNotificationType.Badge).union(UIUserNotificationType.Sound)
+        let notificationSettings:UIUserNotificationSettings = UIUserNotificationSettings(forTypes: notification, categories: nil)
+        UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
+        
+        application.beginBackgroundTaskWithName("showNotification", expirationHandler: nil)
+
         
         return true
     }

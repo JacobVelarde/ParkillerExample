@@ -114,6 +114,15 @@ class ParkillerDelegate {
       return  round(1000 * km) / 1000
     }
     
+    func setNotification(message : String){
+        let notification:UILocalNotification = UILocalNotification()
+        notification.alertBody = message
+        notification.fireDate = NSDate(timeIntervalSinceNow: 5)
+        notification.applicationIconBadgeNumber = 1
+        notification.soundName = UILocalNotificationDefaultSoundName
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+    }
+    
     func searchPlaces(place: String, client: SearchResultsController){
         
 //        _ = place.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.symbolCharacterSet())

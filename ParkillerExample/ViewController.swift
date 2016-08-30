@@ -28,11 +28,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
     var firstViewInformation = Bool()
     var isMarker = Bool()
     var isSharedTwitter = Bool()
+    var isNotificationSend = Bool()
     var marker = GMSMarker()
     var updateLocationStart = Bool()
     var latitudeDestination = Double()
     var longitudeDestination = Double()
     var isRunDistance = Bool()
+    
+    var twoHundredMeters = Bool()
+    var oneHundredMeters = Bool()
+    var fiftyMeters = Bool()
+    var tenMeters = Bool()
+    var nineMeters = Bool()
+ 
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +73,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
         updateLocationStart = false
         isRunDistance = false
         isSharedTwitter = false
+        twoHundredMeters = false
+        oneHundredMeters = false
+        fiftyMeters = false
+        tenMeters = false
+        nineMeters = false
+    }
+    
+    func resetNotification(){
+        twoHundredMeters = false
+        oneHundredMeters = false
+        fiftyMeters = false
+        tenMeters = false
+        nineMeters = false
     }
     
     func customGoogleMaps(){
@@ -174,6 +196,51 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
         }
     }
     
+    func validateNotification(distance : Double, message : String){
+        
+        if distance <= 10 && !nineMeters {
+            parKillerDelegate.setNotification(message)
+            nineMeters = true
+            tenMeters = false
+            fiftyMeters = false
+            oneHundredMeters = false
+            twoHundredMeters = false
+            
+        }else if distance > 10 && distance <= 50 && !tenMeters{
+            parKillerDelegate.setNotification(message)
+            nineMeters = false
+            tenMeters = true
+            fiftyMeters = false
+            oneHundredMeters = false
+            twoHundredMeters = false
+            return
+        }else if distance > 50 && distance <= 100 && !fiftyMeters{
+            parKillerDelegate.setNotification(message)
+            nineMeters = false
+            tenMeters = false
+            fiftyMeters = true
+            oneHundredMeters = false
+            twoHundredMeters = false
+            return
+        }else if distance > 100 && distance <= 200 && !oneHundredMeters{
+            parKillerDelegate.setNotification(message)
+            nineMeters = false
+            tenMeters = false
+            fiftyMeters = false
+            oneHundredMeters = true
+            twoHundredMeters = false
+            return
+        }else if distance > 200 && !twoHundredMeters{
+            parKillerDelegate.setNotification(message)
+            nineMeters = false
+            tenMeters = false
+            fiftyMeters = false
+            oneHundredMeters = false
+            twoHundredMeters = true
+            return
+        }
+        
+    }
     
     func customButonStop(){
         buttonGo.setTitle("STOP", forState: UIControlState.Normal)
@@ -216,13 +283,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
         if let location = locations.first{
             
             if !updateLocationStart{
-                
                 googleMaps.camera = GMSCameraPosition(target: location.coordinate,zoom: 17, bearing: 0, viewingAngle: 0)
                 locationManager.stopUpdatingLocation()
                 
             }else{
                 dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                    self.googleMaps.camera = GMSCameraPosition(target: location.coordinate,zoom: 17, bearing: 0, viewingAngle: 0)
+                    self.googleMaps.camera = GMSCameraPosition(target: location.coordinate,zoom: 17, bearing: 30, viewingAngle: 0)
                 }
                 let distances = parKillerDelegate.distanceBetweenTwoPoint((manager.location?.coordinate.latitude)!, lonOne: (manager.location?.coordinate.longitude)!, latTwo: latitudeDestination, lonTwo: longitudeDestination)
                 
@@ -237,6 +303,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
                     parKillerDelegate.sharedTwitter()
                     isSharedTwitter = true
                 }
+                
+                validateNotification(Double(distanceM!)!, message: lblMessage.text!)
             }
         }
     }
@@ -252,6 +320,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
                 marker.map = nil
                 googleMaps.clear()
                 isMarker = false
+                resetNotification()
             }else if response == "CANCEL"{
                 
                 isMarker = true
@@ -276,6 +345,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
                 addGesture()
                 updateLocationStart = false
                 locationManager.stopUpdatingHeading()
+                resetNotification()
 
             }
             
@@ -290,6 +360,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
                 updateLocationStart = false
                 isRunDistance = false
                 locationManager.stopUpdatingHeading()
+                resetNotification()
             }else if response == "CANCEL"{
                 //Hacer algo?
             }
@@ -319,6 +390,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, parKillerDele
         parKillerDelegate.searchPlaces(searchText, client: searchResultController)
         
     }
+    
+    
  
 }
 
